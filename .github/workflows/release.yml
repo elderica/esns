@@ -20,7 +20,8 @@ jobs:
           release_name: Release ${{ github.ref }}
           draft: false
           prerelease: false
-  : name: "Build on Racket '${{ matrix.racket-version }}' (${{ matrix.racket-variant }})"
+  build:
+    name: "Build on Racket '${{ matrix.racket-version }}' (${{ matrix.racket-variant }})"
     runs-on: ubuntu-latest
     strategy:
       matrix:
