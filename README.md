@@ -1,33 +1,41 @@
-esns
-====
-[エンジニアのためのSNS](https://qiita.com/HawkClaws/items/599d7666f55e79ef7f56) 用の単純なCLIクライアント
+# esns
 
+[エンジニアのための SNS](https://qiita.com/HawkClaws/items/599d7666f55e79ef7f56) 用の単純な CLI クライアント
 
-使い方
------
+## 使い方
 
-**ユーザアカウントを作成する**
+### ユーザアカウントを作成する
 
-`esns -c <your username> <your description>`
+```bash
+esns -c <your username> <your description>
+```
 
-**ユーザアカウントを更新する**
+### ユーザアカウントを更新する
 
-`esns -u <your username> <your description>`
+```bash
+esns -u <your username> <your description>
+```
 
-**ツイートする**
+### ツイートする
 
-`esns -t <text>`
+```bash
+esns -t <text>
+```
 
-**SNS上にいるユーザアカウントのリストを得る**
+### SNS 上にいるユーザアカウントのリストを得る
 
-`esns -w`
+```bash
+esns -w
+```
 
-**SNS上の全てのツイートのリストを得る**
+### SNS 上の全てのツイートのリストを得る
 
-`esns -l`
+```bash
+esns -l
+```
 
-ビルド
-------
+## ビルド
+
 [Racket](https://racket-lang.org/) が必要です。  
 `raco exe -o esns main.rkt` と入力することで実行ファイルが得られます。  
-この実行ファイルをPATHが通っているところにコピーしてください。
+この実行ファイルを PATH が通っているところにコピーしてください。
