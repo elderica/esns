@@ -1,0 +1,59 @@
+name: release
+on:
+  push:
+    tags:
+      - "*"
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@master
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+  : name: "Build on Racket '${{ matrix.racket-version }}' (${{ matrix.racket-variant }})"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # racket-version: ["stable", "current"]
+        # racket-variant: ["BC", "CS"]
+        racket-version: ["stable"]
+        racket-variant: ["BC"]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: Bogdanp/setup-racket@v0.12
+        with:
+          architecture: x64
+          distribution: full
+          variant: ${{ matrix.racket-variant }}
+          version: ${{ matrix.racket-version }}
+      - name: Installing esns and its dependencies
+        run: raco pkg install --no-docs --auto --name esns
+      - name: Build binary
+        run: raco exe -o esns main.rkt
+      # - name: upload
+      #   uses: actions/upload-artifact@v1
+      #   with:
+      #     name: binary
+      #     path: esns
+  upload:
+    needs: [release, build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Append binary to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./esns
+          asset_name: esns
