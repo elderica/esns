@@ -1,0 +1,56 @@
+name: Release
+on:
+  push:
+    tags:
+      - "*"
+  workflow_dispatch:
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: Bogdanp/setup-racket@v0.12
+        with:
+          architecture: x64
+          distribution: full
+          variant: BC
+          version: stable
+      - name: Install esns and its dependencies
+        run: raco pkg install --no-docs --auto --name esns
+      - name: Build binary
+        run: raco exe -o esns main.rkt
+      - name: Upload
+        uses: actions/upload-artifact@v1
+        with:
+          name: esns
+          path: esns
+  release:
+    name: Release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download binary
+        id: download
+        uses: actions/download-artifact@v1
+        with:
+          name: esns
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+      - name: Append binary to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: esns/esns
+          asset_name: esns
+          asset_content_type: application/octet-stream

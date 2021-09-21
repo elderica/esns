@@ -1,8 +1,8 @@
+name: Test
 on: [push, pull_request]
-name: CI
 jobs:
-  build:
-    name: "Build on Racket '${{ matrix.racket-version }}' (${{ matrix.racket-variant }})"
+  test:
+    name: "Test building on Racket '${{ matrix.racket-version }}' (${{ matrix.racket-variant }})"
     runs-on: ubuntu-latest
     strategy:
       matrix:
